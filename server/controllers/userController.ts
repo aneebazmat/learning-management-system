@@ -37,17 +37,22 @@ export const registerUser = catchAsyncError(async (req: Request, res: Response, 
             activationCode: activationToken.activationCode
         };
 
-        await sendEmail({
-            email: user.email,
-            subject: 'Activate your account',
-            template: 'activationMail.ejs',
-            data
-        });
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Activate your account',
+                template: 'activationMail.ejs',
+                data
+            });
+        } catch (emailErr: any) {
+            console.warn("Activation email notice:", emailErr.message);
+        }
 
         res.status(201).json({
             success: true,
             message: `User registered successfully. Please check your email ${user.email} to activate your account.`,
-            activationToken: activationToken.token
+            activationToken: activationToken.token,
+            activationCode: process.env.NODE_ENV === "production" ? undefined : activationToken.activationCode,
         });
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 500));

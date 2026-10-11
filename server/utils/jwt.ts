@@ -17,7 +17,11 @@ export const sendTokens = async (user: IUser, statusCode: number, res: Response)
     const refreshToken = user.SignRefreshToken();
 
     // upload session to redis
-    await redis.set(user._id.toString(), JSON.stringify(user));
+    try {
+        await redis.set(user._id.toString(), JSON.stringify(user));
+    } catch (e) {
+        console.warn("Session cache in Redis skipped:", e);
+    }
 
     // parse environment variables to integrate with fallback values
     const accessTokenOptions: ITokenOptions = {
