@@ -8,6 +8,7 @@ interface AuthModalProps {
   activeItem: any;
   component: any;
   setRoute?: (route: string) => void;
+  refetch?: any;
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({
@@ -15,6 +16,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
   setOpen,
   component: Component,
   setRoute,
+  refetch,
 }) => {
   if (!open) return null;
 
@@ -34,7 +36,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
         >
           <IoCloseOutline size={26} />
         </button>
-        <Component setOpen={setOpen} setRoute={setRoute} />
+        <Component setOpen={setOpen} setRoute={setRoute} refetch={refetch} />
       </div>
     </div>
   );

@@ -4,17 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { BiSearch } from "react-icons/bi";
 import { useRouter } from "next/navigation";
+import { useNavigation } from "../Common/NavigationLoader";
 
 interface Props {}
 
 const Hero: FC<Props> = () => {
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const { startNavigation } = useNavigation();
 
   const handleSearch = () => {
     if (search === "") {
       return;
     }
+    startNavigation();
     router.push(`/courses?title=${search}`);
   };
 
@@ -25,15 +28,16 @@ const Hero: FC<Props> = () => {
       <div className="1000px:w-[40%] flex 1000px:min-h-screen items-center justify-end pt-[70px] 1000px:pt-[0] z-10">
         <div className="relative w-[85%] max-w-[500px] h-[350px] 1000px:h-[450px] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
           <Image
-            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&auto=format&fit=crop&q=80"
-            alt="Students collaborating"
+            src="https://images.unsplash.com/photo-1724190168156-e93ba2bfd041?w=900&auto=format&fit=crop&q=80"
+            alt="Pakistani software developer building web application"
             fill
+            sizes="(max-width: 1000px) 85vw, 500px"
             priority
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
             <span className="text-white font-Poppins font-medium text-lg drop-shadow">
-              Industry-Grade Learning Experience
+              Industry-Grade Pakistani Tech Talent
             </span>
           </div>
         </div>
@@ -53,6 +57,8 @@ const Hero: FC<Props> = () => {
         {/* Search bar */}
         <div className="1500px:w-[55%] 1100px:w-[70%] w-[90%] h-[50px] bg-transparent relative">
           <input
+            id="hero-course-search"
+            name="course_search"
             type="search"
             placeholder="Search Courses..."
             value={search}
@@ -74,17 +80,17 @@ const Hero: FC<Props> = () => {
           <div className="flex -space-x-3 overflow-hidden">
             <img
               className="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-slate-900 object-cover"
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-              alt="student"
-            />
-            <img
-              className="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-slate-900 object-cover"
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
               alt="student"
             />
             <img
               className="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-slate-900 object-cover"
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80"
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"
+              alt="student"
+            />
+            <img
+              className="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-slate-900 object-cover"
+              src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=100&auto=format&fit=crop&q=80"
               alt="student"
             />
           </div>

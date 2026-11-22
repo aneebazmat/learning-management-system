@@ -38,10 +38,11 @@ const CourseInformation: FC<Props> = ({
     <div className="w-[85%] m-auto mt-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className={`${styles.label}`}>Course Name</label>
+          <label htmlFor="name" className={`${styles.label}`}>Course Name</label>
           <input
             type="text"
             required
+            name="name"
             value={courseInfo.name}
             onChange={(e) =>
               setCourseInfo({ ...courseInfo, name: e.target.value })
@@ -53,10 +54,11 @@ const CourseInformation: FC<Props> = ({
         </div>
 
         <div>
-          <label className={`${styles.label}`}>Course Description</label>
+          <label htmlFor="description" className={`${styles.label}`}>Course Description</label>
           <textarea
             rows={4}
             required
+            name="description"
             value={courseInfo.description}
             onChange={(e) =>
               setCourseInfo({ ...courseInfo, description: e.target.value })
@@ -69,10 +71,11 @@ const CourseInformation: FC<Props> = ({
 
         <div className="w-full flex justify-between gap-4">
           <div className="w-[50%]">
-            <label className={`${styles.label}`}>Course Price (USD)</label>
+            <label htmlFor="price" className={`${styles.label}`}>Course Price (USD)</label>
             <input
               type="number"
               required
+              name="price"
               value={courseInfo.price}
               onChange={(e) =>
                 setCourseInfo({ ...courseInfo, price: Number(e.target.value) })
@@ -83,9 +86,10 @@ const CourseInformation: FC<Props> = ({
             />
           </div>
           <div className="w-[50%]">
-            <label className={`${styles.label}`}>Estimated Price (USD)</label>
+            <label htmlFor="estimatedPrice" className={`${styles.label}`}>Estimated Price (USD)</label>
             <input
               type="number"
+              name="estimatedPrice"
               value={courseInfo.estimatedPrice}
               onChange={(e) =>
                 setCourseInfo({
@@ -102,10 +106,11 @@ const CourseInformation: FC<Props> = ({
 
         <div className="w-full flex justify-between gap-4">
           <div className="w-[50%]">
-            <label className={`${styles.label}`}>Course Tags</label>
+            <label htmlFor="tags" className={`${styles.label}`}>Course Tags</label>
             <input
               type="text"
               required
+              name="tags"
               value={courseInfo.tags}
               onChange={(e) =>
                 setCourseInfo({ ...courseInfo, tags: e.target.value })
@@ -116,8 +121,10 @@ const CourseInformation: FC<Props> = ({
             />
           </div>
           <div className="w-[50%]">
-            <label className={`${styles.label}`}>Difficulty Level</label>
+            <label htmlFor="course-level" className={`${styles.label}`}>Difficulty Level</label>
             <select
+              id="course-level"
+              name="level"
               value={courseInfo.level}
               onChange={(e) =>
                 setCourseInfo({ ...courseInfo, level: e.target.value })
@@ -133,10 +140,11 @@ const CourseInformation: FC<Props> = ({
         </div>
 
         <div>
-          <label className={`${styles.label}`}>Demo Video URL</label>
+          <label htmlFor="demoUrl" className={`${styles.label}`}>Demo Video URL</label>
           <input
             type="text"
             required
+            name="demoUrl"
             value={courseInfo.demoUrl}
             onChange={(e) =>
               setCourseInfo({ ...courseInfo, demoUrl: e.target.value })
@@ -178,6 +186,8 @@ const CourseInformation: FC<Props> = ({
 
         <div className="w-full flex justify-end pt-4">
           <input
+            id="course-info-submit"
+            name="submit"
             type="submit"
             value="Next Step"
             className="w-[180px] h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-4 cursor-pointer font-Poppins font-medium hover:bg-[#2b847d] transition-colors"

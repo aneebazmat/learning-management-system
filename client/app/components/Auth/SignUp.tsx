@@ -5,14 +5,16 @@ import * as Yup from "yup";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { styles } from "../../styles/style";
-import { useRegisterMutation } from "../../../redux/features/auth/authApi";
+import { useRegisterMutation, useSocialAuthMutation } from "../../../redux/features/auth/authApi";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { userRegistration } from "../../../redux/features/auth/authSlice";
+import { signInWithFirebaseGoogle } from "../../utils/firebase";
 
 interface Props {
   setRoute: (route: string) => void;
   setOpen?: (open: boolean) => void;
+  refetch?: any;
 }
 
 const schema = Yup.object().shape({
@@ -23,10 +25,31 @@ const schema = Yup.object().shape({
   password: Yup.string().required("Please enter your password").min(6),
 });
 
-const SignUp: FC<Props> = ({ setRoute }) => {
+const SignUp: FC<Props> = ({ setRoute, setOpen, refetch }) => {
   const [show, setShow] = useState(false);
   const [register, { data, error, isSuccess, isLoading }] = useRegisterMutation();
+  const [socialAuth, { isLoading: isSocialLoading }] = useSocialAuthMutation();
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const dispatch = useDispatch();
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      const googleUser = await signInWithFirebaseGoogle();
+      await socialAuth({
+        email: googleUser.email,
+        name: googleUser.name,
+        avatar: googleUser.avatar,
+      }).unwrap();
+      toast.success(`Welcome, ${googleUser.name}!`);
+      if (setOpen) setOpen(false);
+      if (refetch) refetch();
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to sign up with Google");
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -158,15 +181,18 @@ const SignUp: FC<Props> = ({ setRoute }) => {
         <div className="flex items-center justify-center my-3">
           <button
             type="button"
-            className="cursor-pointer mr-3 p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => toast("Social auth configured via OAuth providers")}
+            disabled={isGoogleLoading || isSocialLoading}
+            className="cursor-pointer mr-3 p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+            onClick={handleGoogleSignIn}
+            title="Sign up with Google"
           >
             <FcGoogle size={24} />
           </button>
           <button
             type="button"
             className="cursor-pointer ml-3 p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => toast("GitHub auth configured via OAuth providers")}
+            onClick={() => setRoute("Github-Auth")}
+            title="Sign up with GitHub"
           >
             <AiFillGithub size={24} className="dark:text-white text-black" />
           </button>

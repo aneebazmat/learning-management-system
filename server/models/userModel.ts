@@ -12,7 +12,7 @@ const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export interface IUser extends Document {
     name: string;
     email: string;
-    password: string;
+    password?: string;
     avatar: {
         public_id: string;
         url: string;
@@ -45,7 +45,6 @@ const userSchema: Schema<IUser> = new Schema(
         },
         password: {
             type: String,
-            required: [true, "Please enter your password"],
             minlength: 6,
             select: false
         },
@@ -74,7 +73,7 @@ const userSchema: Schema<IUser> = new Schema(
 
 // Pre-save middleware to hash the password before saving the user document
 userSchema.pre<IUser>("save", async function (this: IUser) {
-    if (!this.isModified("password")) {
+    if (!this.isModified("password") || !this.password) {
         return;
     }
     const salt = await bcrypt.genSalt(10);
@@ -95,6 +94,9 @@ userSchema.methods.SignRefreshToken = function (): string {
 
 // Method to compare the provided password with the hashed password in the database
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+    if (!this.password) {
+        return false;
+    }
     return await bcrypt.compare(candidatePassword, this.password);
 };
 

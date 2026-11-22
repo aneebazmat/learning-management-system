@@ -16,27 +16,31 @@ export const sendTokens = async (user: IUser, statusCode: number, res: Response)
     const accessToken = user.SignAccessToken();
     const refreshToken = user.SignRefreshToken();
 
-    // upload session to redis
+    // Cache user session
     try {
         await redis.set(user._id.toString(), JSON.stringify(user));
-    } catch (e) {
-        console.warn("Session cache in Redis skipped:", e);
-    }
+    } catch (_) {}
 
-    // parse environment variables to integrate with fallback values
+    // parse environment variables to integrate with fallback values (in days)
+    const accessTokenExpireDays = parseInt(process.env.ACCESS_TOKEN_EXPIRES || '7', 10);
+    const refreshTokenExpireDays = parseInt(process.env.REFRESH_TOKEN_EXPIRES || '30', 10);
+
+    const accessTokenMaxAge = accessTokenExpireDays * 24 * 60 * 60 * 1000;
+    const refreshTokenMaxAge = refreshTokenExpireDays * 24 * 60 * 60 * 1000;
+
     const accessTokenOptions: ITokenOptions = {
-        expires: new Date(Date.now() + parseInt(process.env.ACCESS_TOKEN_EXPIRES || '15') * 60 * 1000), // Default to 15 minutes
-        maxAge: parseInt(process.env.ACCESS_TOKEN_EXPIRES || '15') * 60, // Default to 15 minutes
+        expires: new Date(Date.now() + accessTokenMaxAge),
+        maxAge: accessTokenMaxAge,
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production'
     };
 
     const refreshTokenOptions: ITokenOptions = {
-        expires: new Date(Date.now() + parseInt(process.env.REFRESH_TOKEN_EXPIRES || '7') * 24 * 60 * 60 * 1000), // Default to 7 days
-        maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRES || '7') * 24 * 60 * 60, // Default to 7 days
+        expires: new Date(Date.now() + refreshTokenMaxAge),
+        maxAge: refreshTokenMaxAge,
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production'
     };
 
@@ -44,6 +48,7 @@ export const sendTokens = async (user: IUser, statusCode: number, res: Response)
     res.cookie('refreshToken', refreshToken, refreshTokenOptions);
     res.status(statusCode).json({
         success: true,
+        user,
         accessToken,
         refreshToken
     });

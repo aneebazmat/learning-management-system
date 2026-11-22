@@ -8,6 +8,7 @@ import {
   useUpdateAvatarMutation,
 } from "../../../redux/features/auth/authApi";
 import { toast } from "react-hot-toast";
+import { getSafeAvatar } from "../../utils/avatar";
 
 interface Props {
   avatar: string | null;
@@ -59,13 +60,10 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
         <div className="relative w-[120px] h-[120px] mx-auto">
           <div className="relative w-full h-full rounded-full overflow-hidden border-[3px] border-[#37a39a] shadow-lg">
             <Image
-              src={
-                user?.avatar?.url ||
-                avatar ||
-                "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-              }
+              src={getSafeAvatar(avatar || user?.avatar?.url)}
               alt="Profile"
               fill
+              sizes="120px"
               className="object-cover"
             />
           </div>
@@ -86,9 +84,12 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <div>
-            <label className={`${styles.label}`}>Full Name</label>
+            <label htmlFor="profile-full-name" className={`${styles.label}`}>Full Name</label>
             <input
+              id="profile-full-name"
+              name="name"
               type="text"
+              autoComplete="name"
               className={`${styles.input}`}
               required
               value={name}
@@ -96,9 +97,12 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
             />
           </div>
           <div>
-            <label className={`${styles.label}`}>Email Address</label>
+            <label htmlFor="profile-email-address" className={`${styles.label}`}>Email Address</label>
             <input
-              type="text"
+              id="profile-email-address"
+              name="email"
+              type="email"
+              autoComplete="email"
               readOnly
               className={`${styles.input} bg-gray-100 dark:bg-gray-800 cursor-not-allowed opacity-75`}
               value={user?.email || ""}

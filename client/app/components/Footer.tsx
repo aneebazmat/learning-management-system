@@ -29,22 +29,22 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2 text-sm font-Poppins text-gray-600 dark:text-gray-400">
               <li>
-                <Link href="/" className="hover:text-[#37a39a] transition-colors">
+                <Link href="/" prefetch={true} className="hover:text-[#37a39a] transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/courses" className="hover:text-[#37a39a] transition-colors">
+                <Link href="/courses" prefetch={true} className="hover:text-[#37a39a] transition-colors">
                   All Courses
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-[#37a39a] transition-colors">
+                <Link href="/about" prefetch={true} className="hover:text-[#37a39a] transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="hover:text-[#37a39a] transition-colors">
+                <Link href="/faq" prefetch={true} className="hover:text-[#37a39a] transition-colors">
                   FAQ
                 </Link>
               </li>
@@ -58,17 +58,17 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2 text-sm font-Poppins text-gray-600 dark:text-gray-400">
               <li>
-                <Link href="/policy" className="hover:text-[#37a39a] transition-colors">
+                <Link href="/policy" prefetch={true} className="hover:text-[#37a39a] transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/policy" className="hover:text-[#37a39a] transition-colors">
+                <Link href="/policy" prefetch={true} className="hover:text-[#37a39a] transition-colors">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/policy" className="hover:text-[#37a39a] transition-colors">
+                <Link href="/policy" prefetch={true} className="hover:text-[#37a39a] transition-colors">
                   Refund Policy
                 </Link>
               </li>

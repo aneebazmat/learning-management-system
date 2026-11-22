@@ -6,6 +6,7 @@ import { SiCoursera } from "react-icons/si";
 import { AiOutlineLogout } from "react-icons/ai";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import Link from "next/link";
+import { getSafeAvatar } from "../../utils/avatar";
 
 interface Props {
   user: any;
@@ -34,13 +35,10 @@ const SidebarProfile: FC<Props> = ({
       >
         <div className="relative w-[30px] h-[30px] 800px:w-[36px] 800px:h-[36px] rounded-full overflow-hidden border-2 border-[#37a39a]">
           <Image
-            src={
-              avatar ||
-              user?.avatar?.url ||
-              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-            }
+            src={getSafeAvatar(avatar || user?.avatar?.url)}
             alt="Profile Avatar"
             fill
+            sizes="36px"
             className="object-cover"
           />
         </div>

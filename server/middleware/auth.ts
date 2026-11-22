@@ -9,10 +9,12 @@ require("dotenv").config();
 
 // Authenticated user check
 export const isAuthenticated = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  let accessToken = req.cookies.accessToken;
+  let accessToken = "";
 
-  if (!accessToken && req.headers.authorization?.startsWith("Bearer ")) {
+  if (req.headers.authorization?.startsWith("Bearer ")) {
     accessToken = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies?.accessToken) {
+    accessToken = req.cookies.accessToken;
   }
 
   if (!accessToken) {
@@ -20,25 +22,35 @@ export const isAuthenticated = catchAsyncError(async (req: Request, res: Respons
   }
 
   try {
-    const decoded = jwt.verify(
-      accessToken,
-      process.env.ACCESS_TOKEN_SECRET as Secret
-    ) as JwtPayload;
+    let decoded: JwtPayload;
+    try {
+      decoded = jwt.verify(
+        accessToken,
+        process.env.ACCESS_TOKEN_SECRET as Secret
+      ) as JwtPayload;
+    } catch (err) {
+      if (req.cookies?.accessToken && accessToken !== req.cookies.accessToken) {
+        decoded = jwt.verify(
+          req.cookies.accessToken,
+          process.env.ACCESS_TOKEN_SECRET as Secret
+        ) as JwtPayload;
+      } else {
+        throw err;
+      }
+    }
 
     if (!decoded || !decoded.id) {
       return next(new ErrorHandler("Invalid access token", 401));
     }
 
-    // Try Redis cache first
+    // Try session cache first, fallback to database
     let user: IUser | null = null;
     try {
       const userSession = await redis.get(decoded.id);
       if (userSession) {
         user = JSON.parse(userSession);
       }
-    } catch (redisErr) {
-      console.warn("Redis lookup failed, falling back to database", redisErr);
-    }
+    } catch (_) {}
 
     // Fallback to database
     if (!user) {

@@ -51,9 +51,12 @@ const ChangePassword: FC<Props> = () => {
         </h1>
         <form onSubmit={passwordChangeHandler} className="space-y-5">
           <div>
-            <label className={`${styles.label}`}>Enter your old password</label>
+            <label htmlFor="old-password" className={`${styles.label}`}>Enter your old password</label>
             <input
+              id="old-password"
+              name="oldPassword"
               type="password"
+              autoComplete="current-password"
               className={`${styles.input}`}
               required
               value={oldPassword}
@@ -61,9 +64,12 @@ const ChangePassword: FC<Props> = () => {
             />
           </div>
           <div>
-            <label className={`${styles.label}`}>Enter your new password</label>
+            <label htmlFor="new-password" className={`${styles.label}`}>Enter your new password</label>
             <input
+              id="new-password"
+              name="newPassword"
               type="password"
+              autoComplete="new-password"
               className={`${styles.input}`}
               required
               value={newPassword}
@@ -71,9 +77,12 @@ const ChangePassword: FC<Props> = () => {
             />
           </div>
           <div>
-            <label className={`${styles.label}`}>Confirm your new password</label>
+            <label htmlFor="confirm-password" className={`${styles.label}`}>Confirm your new password</label>
             <input
+              id="confirm-password"
+              name="confirmPassword"
               type="password"
+              autoComplete="new-password"
               className={`${styles.input}`}
               required
               value={confirmPassword}

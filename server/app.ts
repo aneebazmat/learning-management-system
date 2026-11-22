@@ -1,9 +1,13 @@
+import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/error";
 import userRoutes from "./routes/userRoute";
 import courseRoutes from "./routes/courseRoute";
+import orderRoutes from "./routes/orderRoute";
+import analyticsRoutes from "./routes/analyticsRoute";
+import notificationRoutes from "./routes/notificationRoute";
 
 export const app = express();
 
@@ -46,7 +50,15 @@ app.get("/test", (req: Request, res: Response) => {
 
 // Mount API routes
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1", userRoutes);
 app.use("/api/v1/courses", courseRoutes);
+app.use("/api/v1", courseRoutes);
+app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1", orderRoutes);
+app.use("/api/v1/analytics", analyticsRoutes);
+app.use("/api/v1", analyticsRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
+app.use("/api/v1", notificationRoutes);
 
 // Unknown route handler for undefined routes
 app.use((req: Request, res: Response, next: NextFunction) => {

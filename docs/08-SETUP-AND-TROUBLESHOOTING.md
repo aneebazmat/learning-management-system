@@ -23,11 +23,14 @@ REFRESH_TOKEN_SECRET = your_jwt_refresh_secret
 ACCESS_TOKEN_EXPIRES = 15
 REFRESH_TOKEN_EXPIRES = 7
 RESET_PASSWORD_SECRET = your_jwt_reset_secret
-SMPT_HOST = smtp.gmail.com
-SMPT_PORT = 465
-SMPT_SERVICE = gmail
-SMPT_MAIL = your_email@gmail.com
-SMPT_PASSWORD = your_app_password
+# Gmail SMTP Configuration
+SMTP_HOST = smtp.gmail.com
+SMTP_PORT = 465
+SMTP_SERVICE = gmail
+SMTP_MAIL = your_email@gmail.com
+SMTP_USER = your_email@gmail.com
+SMTP_PASSWORD = your_16_digit_app_password
+SMTP_FROM_NAME = "E-Learning"
 ```
 
 ### 2. Running Backend
@@ -72,3 +75,15 @@ Open `http://localhost:3000` in your web browser.
 ### Issue 3: Hydration Mismatch in Next.js
 - **Symptom:** React warning about server vs client rendered markup for theme or icons.
 - **Fix:** Ensure components using `useTheme` or browser-only features wait for `mounted === true` before rendering theme-dependent icons.
+
+### Issue 4: Activation Email Notice / Email Could Not Be Sent
+- **Symptom:** `Activation email notice: Email could not be sent to user@gmail.com`.
+- **Causes:**
+  1. Typo in environment variables (`SMPT_*` instead of `SMTP_*` or `SMTP_USER` missing).
+  2. Wrong port (e.g. `2525` is for Mailtrap sandbox, whereas Gmail requires `465` with SSL or `587` with TLS).
+  3. Google App Password formatted with spaces or using standard account password instead of a dedicated 16-character Google App Password (requires 2-Step Verification).
+  4. Missing sender header (`SMTP_FROM_NAME`).
+- **Fix:**
+  - In `server/utils/sendMail.ts`, implement automatic normalization of `SMTP_*` and `SMPT_*`, default Gmail port to `465` (SSL), auto-strip spaces from App Passwords, and provide a valid `from` sender.
+  - In `server/.env`, ensure `SMTP_HOST = smtp.gmail.com`, `SMTP_PORT = 465`, `SMTP_SERVICE = gmail`, `SMTP_MAIL = your_email@gmail.com`, and `SMTP_PASSWORD = your_app_password`.
+

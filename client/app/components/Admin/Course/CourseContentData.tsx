@@ -74,8 +74,10 @@ const CourseContentData: FC<Props> = ({
 
           <div className="space-y-4">
             <div>
-              <label className={`${styles.label}`}>Section Title</label>
+              <label htmlFor={`section-title-${index}`} className={`${styles.label}`}>Section Title</label>
               <input
+                id={`section-title-${index}`}
+                name={`sectionTitle_${index}`}
                 type="text"
                 className={`${styles.input}`}
                 placeholder="e.g. Module 1: System Design & Setup"
@@ -87,8 +89,10 @@ const CourseContentData: FC<Props> = ({
             </div>
 
             <div>
-              <label className={`${styles.label}`}>Lecture Title</label>
+              <label htmlFor={`lecture-title-${index}`} className={`${styles.label}`}>Lecture Title</label>
               <input
+                id={`lecture-title-${index}`}
+                name={`lectureTitle_${index}`}
                 type="text"
                 className={`${styles.input}`}
                 placeholder="e.g. Project Overview & Folder Architecture"
@@ -101,8 +105,10 @@ const CourseContentData: FC<Props> = ({
 
             <div className="flex gap-4">
               <div className="w-[70%]">
-                <label className={`${styles.label}`}>Video URL</label>
+                <label htmlFor={`video-url-${index}`} className={`${styles.label}`}>Video URL</label>
                 <input
+                  id={`video-url-${index}`}
+                  name={`videoUrl_${index}`}
                   type="text"
                   className={`${styles.input}`}
                   placeholder="https://... (YouTube, Vimeo, MP4)"
@@ -113,8 +119,10 @@ const CourseContentData: FC<Props> = ({
                 />
               </div>
               <div className="w-[30%]">
-                <label className={`${styles.label}`}>Duration (Mins)</label>
+                <label htmlFor={`video-length-${index}`} className={`${styles.label}`}>Duration (Mins)</label>
                 <input
+                  id={`video-length-${index}`}
+                  name={`videoLength_${index}`}
                   type="number"
                   className={`${styles.input}`}
                   placeholder="15"
@@ -127,8 +135,10 @@ const CourseContentData: FC<Props> = ({
             </div>
 
             <div>
-              <label className={`${styles.label}`}>Lecture Description</label>
+              <label htmlFor={`lecture-desc-${index}`} className={`${styles.label}`}>Lecture Description</label>
               <textarea
+                id={`lecture-desc-${index}`}
+                name={`lectureDescription_${index}`}
                 rows={3}
                 className={`${styles.input} !h-min !py-2`}
                 placeholder="Brief summary of what this lecture teaches..."

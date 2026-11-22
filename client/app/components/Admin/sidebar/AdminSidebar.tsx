@@ -13,6 +13,7 @@ import {
 } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import { getSafeAvatar } from "../../../utils/avatar";
 
 interface Props {
   active: number;
@@ -29,12 +30,10 @@ const AdminSidebar: FC<Props> = ({ active, setActive }) => {
         <div className="text-center py-6 border-b border-gray-100 dark:border-gray-800">
           <div className="relative w-[70px] h-[70px] mx-auto rounded-full overflow-hidden border-2 border-[#37a39a]">
             <Image
-              src={
-                user?.avatar?.url ||
-                "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-              }
+              src={getSafeAvatar(user?.avatar?.url)}
               alt="Admin"
               fill
+              sizes="70px"
               className="object-cover"
             />
           </div>

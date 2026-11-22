@@ -5,8 +5,9 @@ import * as Yup from "yup";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { styles } from "../../styles/style";
-import { useLoginMutation } from "../../../redux/features/auth/authApi";
+import { useLoginMutation, useSocialAuthMutation } from "../../../redux/features/auth/authApi";
 import { toast } from "react-hot-toast";
+import { signInWithFirebaseGoogle } from "../../utils/firebase";
 
 interface Props {
   setRoute: (route: string) => void;
@@ -24,6 +25,27 @@ const schema = Yup.object().shape({
 const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
   const [show, setShow] = useState(false);
   const [login, { isSuccess, error, data, isLoading }] = useLoginMutation();
+  const [socialAuth, { isLoading: isSocialLoading }] = useSocialAuthMutation();
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      const googleUser = await signInWithFirebaseGoogle();
+      await socialAuth({
+        email: googleUser.email,
+        name: googleUser.name,
+        avatar: googleUser.avatar,
+      }).unwrap();
+      toast.success(`Welcome, ${googleUser.name}!`);
+      setOpen(false);
+      if (refetch) refetch();
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to sign in with Google");
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },
@@ -132,15 +154,18 @@ const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
         <div className="flex items-center justify-center my-3">
           <button
             type="button"
-            className="cursor-pointer mr-3 p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => toast("Social auth configured via OAuth providers")}
+            disabled={isGoogleLoading || isSocialLoading}
+            className="cursor-pointer mr-3 p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+            onClick={handleGoogleSignIn}
+            title="Sign in with Google"
           >
             <FcGoogle size={24} />
           </button>
           <button
             type="button"
             className="cursor-pointer ml-3 p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => toast("GitHub auth configured via OAuth providers")}
+            onClick={() => setRoute("Github-Auth")}
+            title="Sign in with GitHub"
           >
             <AiFillGithub size={24} className="dark:text-white text-black" />
           </button>

@@ -7,13 +7,22 @@ export const apiSlice = createApi({
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as any;
-      const token = state?.auth?.token;
+      let token = state?.auth?.token;
+      if (!token && typeof window !== "undefined") {
+        try {
+          token = localStorage.getItem("access_token") || "";
+        } catch (_) {}
+      }
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
       return headers;
     },
   }),
-  tagTypes: ["User", "Courses", "Orders", "Analytics"],
+  tagTypes: ["User", "Courses", "Orders", "Analytics", "Notifications"],
+  keepUnusedDataFor: 300,
+  refetchOnMountOrArgChange: false,
+  refetchOnFocus: false,
+  refetchOnReconnect: false,
   endpoints: (builder) => ({}),
 });

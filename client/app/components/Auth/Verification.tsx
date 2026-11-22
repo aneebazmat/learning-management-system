@@ -101,6 +101,8 @@ const Verification: FC<Props> = ({ setRoute }) => {
       <div className="m-auto flex items-center justify-around">
         {Object.keys(verifyNumber).map((key, index) => (
           <input
+            id={`verify-code-${index}`}
+            name={`verify_code_${index}`}
             type="text"
             key={key}
             ref={inputRefs[index]}

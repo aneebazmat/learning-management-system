@@ -42,3 +42,20 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #2b847d;
 }
+
+/* Route navigation top progress bar animation */
+@keyframes top-progress-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-top-progress {
+  animation: top-progress-bar 1.2s infinite ease-in-out;
+}

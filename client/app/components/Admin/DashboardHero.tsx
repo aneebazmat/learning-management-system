@@ -81,23 +81,23 @@ const DashboardHero: FC = () => {
                 <th className="py-3">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <tbody className="divide-y divide-gray-100 dark:border-gray-800">
               <tr>
-                <td className="py-3 font-medium text-black dark:text-white">Alex Johnson</td>
+                <td className="py-3 font-medium text-black dark:text-white">Hamza Tariq</td>
                 <td className="py-3 text-gray-600 dark:text-gray-300">Next.js 14 Masterclass</td>
                 <td className="py-3 font-semibold text-black dark:text-white">$49.00</td>
                 <td className="py-3 text-gray-500 text-xs">Today, 09:24 AM</td>
                 <td className="py-3"><span className="px-2 py-1 rounded-full text-[11px] bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 font-semibold">Completed</span></td>
               </tr>
               <tr>
-                <td className="py-3 font-medium text-black dark:text-white">Samantha Wright</td>
+                <td className="py-3 font-medium text-black dark:text-white">Ayesha Malik</td>
                 <td className="py-3 text-gray-600 dark:text-gray-300">Python AI Agent Bootcamp</td>
                 <td className="py-3 font-semibold text-black dark:text-white">$39.00</td>
                 <td className="py-3 text-gray-500 text-xs">Yesterday, 04:15 PM</td>
                 <td className="py-3"><span className="px-2 py-1 rounded-full text-[11px] bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 font-semibold">Completed</span></td>
               </tr>
               <tr>
-                <td className="py-3 font-medium text-black dark:text-white">David Chen</td>
+                <td className="py-3 font-medium text-black dark:text-white">Bilal Ahmed</td>
                 <td className="py-3 text-gray-600 dark:text-gray-300">Cloud Infrastructure & Docker</td>
                 <td className="py-3 font-semibold text-black dark:text-white">$59.00</td>
                 <td className="py-3 text-gray-500 text-xs">2 days ago</td>

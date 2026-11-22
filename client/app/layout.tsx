@@ -28,7 +28,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:!bg-[#040c18] duration-300 min-h-screen`}
+        suppressHydrationWarning
+        className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:!bg-[#040c18] min-h-screen`}
       >
         <Providers>
           {children}
