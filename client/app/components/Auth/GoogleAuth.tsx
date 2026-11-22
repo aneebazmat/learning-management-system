@@ -48,7 +48,7 @@ const GoogleAuth: FC<Props> = ({ setRoute, setOpen, refetch }) => {
           Sign in with Google (Firebase)
         </h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-Poppins">
-          Connected to Firebase Project: <span className="font-semibold text-[#37a39a]">{firebaseConfig.projectId}</span>
+          Connected to Firebase Project: <span className="font-semibold text-[#37a39a]">{firebaseConfig.projectId || "Configured via .env"}</span>
         </p>
       </div>
 
@@ -60,7 +60,7 @@ const GoogleAuth: FC<Props> = ({ setRoute, setOpen, refetch }) => {
             <span>Firebase Configuration Active</span>
           </div>
           <p className="text-gray-600 dark:text-gray-300">
-            Auth Domain: <code className="text-[11px] font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">{firebaseConfig.authDomain}</code>
+            Auth Domain: <code className="text-[11px] font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">{firebaseConfig.authDomain || "Configured via .env"}</code>
           </p>
         </div>
 
