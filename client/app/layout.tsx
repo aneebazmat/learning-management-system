@@ -1,19 +1,6 @@
 import "./globals.css";
-import { Poppins, Josefin_Sans } from "next/font/google";
 import { Providers } from "./Provider";
 import { Toaster } from "react-hot-toast";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-Poppins",
-});
-
-const josefin = Josefin_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-Josefin",
-});
 
 export const metadata = {
   title: "ELearning - Industrial LMS Platform",
@@ -27,9 +14,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body
         suppressHydrationWarning
-        className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:!bg-[#040c18] min-h-screen`}
+        className="!bg-white bg-no-repeat dark:!bg-[#040c18] min-h-screen font-Poppins"
       >
         <Providers>
           {children}
