@@ -5,9 +5,11 @@
   "license": "ISC",
   "author": "aneeb azmat",
   "type": "commonjs",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only server.ts"
   },
   "dependencies": {

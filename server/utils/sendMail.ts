@@ -1,6 +1,7 @@
 import nodemailer, { Transporter } from "nodemailer";
 import ejs from "ejs";
 import path from "path";
+import fs from "fs";
 require("dotenv").config();
 
 interface ISendEmailOptions {
@@ -53,7 +54,10 @@ const sendEmail = async ({ email, subject, template, data }: ISendEmailOptions) 
 
         // Render the email template using EJS
         const templateFile = template.endsWith(".ejs") ? template : `${template}.ejs`;
-        const html = await ejs.renderFile(path.join(__dirname, `../mails/${templateFile}`), data);
+        const templatePath = fs.existsSync(path.join(__dirname, `../mails/${templateFile}`))
+            ? path.join(__dirname, `../mails/${templateFile}`)
+            : path.join(process.cwd(), `mails/${templateFile}`);
+        const html = await ejs.renderFile(templatePath, data);
 
         const fromName = process.env.SMTP_FROM_NAME || "E-Learning";
         const fromAddress = user || "no-reply@example.com";
