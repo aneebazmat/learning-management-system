@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import ErrorHandler from "./utils/ErrorHandler";
 import errorHandler from "./middleware/error";
 import userRoutes from "./routes/userRoute";
 import courseRoutes from "./routes/courseRoute";
@@ -62,8 +63,7 @@ app.use("/api/v1", notificationRoutes);
 
 // Unknown route handler for undefined routes
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
-  res.status(404);
+  const error = new ErrorHandler(`Not Found - ${req.originalUrl}`, 404);
   next(error);
 });
 

@@ -4,11 +4,12 @@
   "private": true,
   "description": "Full Stack Learning Management System (Industrial LMS)",
   "scripts": {
-    "build": "npm install --prefix server && npm run build --prefix server",
-    "start": "npm start --prefix server",
+    "build": "npm run build:server && npm run build:client",
     "build:server": "npm install --prefix server && npm run build --prefix server",
-    "start:server": "npm start --prefix server",
     "build:client": "npm install --prefix client && npm run build --prefix client",
-    "start:client": "npm start --prefix client"
+    "start": "node start.js",
+    "start:server": "npm start --prefix server",
+    "start:client": "npm start --prefix client",
+    "dev": "node start.js"
   }
 }

@@ -3,7 +3,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_SERVER_URI || "http://localhost:5000/api/v1",
+    baseUrl:
+      process.env.NEXT_PUBLIC_SERVER_URI ||
+      (typeof window !== "undefined" ? "/api/v1" : "http://localhost:5000/api/v1"),
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as any;

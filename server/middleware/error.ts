@@ -8,7 +8,7 @@ type MiddlewareError = ErrorHandler & {
 };
 
 const errorHandler = (err: MiddlewareError, req: Request, res: Response, next: NextFunction) => {
-    const statusCode = err.statusCode || 500;
+    const statusCode = err.statusCode || (res.statusCode && res.statusCode !== 200 ? res.statusCode : 500);
     const message = err.message || "Internal Server Error";
      
     // Wrong Mongoose ObjectId Error

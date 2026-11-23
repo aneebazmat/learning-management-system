@@ -1,19 +1,18 @@
 services:
-  # Backend Web Service (Node.js / Express)
+  # Unified Full-Stack Web Service (Next.js + Express)
   - type: web
-    name: lms-backend
+    name: learning-management-system
     runtime: node
     plan: free
-    rootDir: server
-    buildCommand: npm install && npm run build
+    buildCommand: npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5000
+      - key: NEXT_PUBLIC_SERVER_URI
+        value: /api/v1
       - key: ORIGIN
-        sync: false
+        value: "['http://localhost:3000']"
       - key: MONGODB_URI
         sync: false
       - key: REDIS_URL
@@ -48,20 +47,6 @@ services:
         sync: false
       - key: SMTP_FROM_NAME
         value: E-Learning
-
-  # Frontend Web Service (Next.js)
-  - type: web
-    name: lms-frontend
-    runtime: node
-    plan: free
-    rootDir: client
-    buildCommand: npm install && npm run build
-    startCommand: npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: NEXT_PUBLIC_SERVER_URI
-        sync: false
       - key: NEXT_PUBLIC_FIREBASE_API_KEY
         sync: false
       - key: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
@@ -75,4 +60,6 @@ services:
       - key: NEXT_PUBLIC_FIREBASE_APP_ID
         sync: false
       - key: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+        sync: false
+      - key: NEXT_PUBLIC_GITHUB_CLIENT_ID
         sync: false
