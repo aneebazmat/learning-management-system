@@ -2,8 +2,22 @@ const { spawn } = require("child_process");
 const path = require("path");
 const http = require("http");
 
-const PUBLIC_PORT = process.env.PORT || "3000";
-const SERVER_PORT = process.env.SERVER_PORT || process.env.EXPRESS_PORT || "5000";
+// 1. PUBLIC_PORT: The public-facing port assigned by Render (or 3000 default for local).
+// Next.js MUST listen on this port so Render's load balancer can route external traffic to it.
+const PUBLIC_PORT = Number(process.env.PORT || 3000);
+
+// 2. SERVER_PORT: Internal port for the Express backend.
+// It MUST NEVER conflict with PUBLIC_PORT.
+// If PUBLIC_PORT is 5000, Express uses 5001. Otherwise, Express uses 5000.
+let SERVER_PORT = Number(
+  process.env.SERVER_PORT ||
+  process.env.EXPRESS_PORT ||
+  (PUBLIC_PORT === 5000 ? 5001 : 5000)
+);
+
+if (SERVER_PORT === PUBLIC_PORT) {
+  SERVER_PORT = PUBLIC_PORT === 5000 ? 5001 : 5000;
+}
 
 console.log("==================================================");
 console.log("Starting LMS Collective Full-Stack System");
@@ -15,40 +29,48 @@ let serverProcess = null;
 let clientProcess = null;
 let isShuttingDown = false;
 
-function checkBackendReady(port, maxRetries = 30, interval = 500) {
+function checkBackendReady(port, maxRetries = 40, interval = 500) {
   return new Promise((resolve) => {
     let retries = 0;
-    const check = () => {
+    let isDone = false;
+
+    const attempt = () => {
+      if (isDone) return;
       retries++;
+
       const req = http.get(`http://127.0.0.1:${port}/test`, (res) => {
         if (res.statusCode === 200) {
-          console.log(`[system] Backend API verified healthy on port ${port}!`);
-          resolve(true);
+          if (!isDone) {
+            isDone = true;
+            console.log(`[system] Backend API verified healthy on port ${port}!`);
+            resolve(true);
+          }
         } else {
-          retry();
+          scheduleRetry();
         }
       });
 
       req.on("error", () => {
-        retry();
+        scheduleRetry();
       });
 
       req.setTimeout(1000, () => {
         req.destroy();
-        retry();
       });
 
-      function retry() {
+      function scheduleRetry() {
+        if (isDone) return;
         if (retries >= maxRetries) {
+          isDone = true;
           console.warn(`[system] Backend health check timed out after ${maxRetries * interval}ms. Starting frontend anyway.`);
           resolve(false);
         } else {
-          setTimeout(check, interval);
+          setTimeout(attempt, interval);
         }
       }
     };
 
-    check();
+    attempt();
   });
 }
 
@@ -56,6 +78,7 @@ function startBackend() {
   const serverEnv = {
     ...process.env,
     PORT: String(SERVER_PORT),
+    SERVER_PORT: String(SERVER_PORT),
   };
 
   const serverScript = path.join(__dirname, "server", "dist", "server.js");
@@ -88,12 +111,13 @@ function startFrontend() {
     ...process.env,
     PORT: String(PUBLIC_PORT),
     SERVER_PORT: String(SERVER_PORT),
+    EXPRESS_PORT: String(SERVER_PORT),
     NEXT_PUBLIC_SERVER_URI: process.env.NEXT_PUBLIC_SERVER_URI || "/api/v1",
   };
 
   const nextBin = path.join(__dirname, "client", "node_modules", "next", "dist", "bin", "next");
 
-  clientProcess = spawn(process.execPath, [nextBin, "start"], {
+  clientProcess = spawn(process.execPath, [nextBin, "start", "-p", String(PUBLIC_PORT)], {
     cwd: path.join(__dirname, "client"),
     env: clientEnv,
     stdio: ["inherit", "pipe", "pipe"],
@@ -120,7 +144,7 @@ async function start() {
   // 1. Start backend process directly with node
   startBackend();
 
-  // 2. Wait until backend is verified listening and healthy on port 5000
+  // 2. Wait until backend is verified listening and healthy on internal port
   await checkBackendReady(SERVER_PORT);
 
   // 3. Start Next.js frontend on public port

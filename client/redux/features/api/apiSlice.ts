@@ -18,7 +18,8 @@ const getBaseUrl = (): string => {
   }
 
   // Server-side rendering (SSR) / build time
-  return process.env.NEXT_PUBLIC_SERVER_URI || "http://127.0.0.1:5000/api/v1";
+  const backendPort = process.env.SERVER_PORT || process.env.EXPRESS_PORT || "5000";
+  return process.env.NEXT_PUBLIC_SERVER_URI || `http://127.0.0.1:${backendPort}/api/v1`;
 };
 
 export const apiSlice = createApi({
