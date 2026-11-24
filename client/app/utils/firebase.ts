@@ -56,8 +56,9 @@ export const signInWithFirebaseGoogle = async (): Promise<FirebaseUserData> => {
       throw new Error("Sign-in request was cancelled.");
     }
     if (error.code === "auth/unauthorized-domain") {
+      const currentHost = typeof window !== "undefined" ? window.location.hostname : "your domain";
       throw new Error(
-        "Domain unauthorized in Firebase. Please add 'localhost' to Authorized Domains in Firebase Console > Authentication > Settings > Authorized Domains."
+        `Domain '${currentHost}' is not authorized for OAuth in Firebase. Please add '${currentHost}' to Authorized Domains in Firebase Console > Authentication > Settings > Authorized Domains.`
       );
     }
     if (error.code === "auth/operation-not-allowed") {
