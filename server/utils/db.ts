@@ -2,7 +2,6 @@ require('dotenv').config();
 
 import dns from 'node:dns';
 import mongoose from 'mongoose';
-import { seedInitialCoursesIfEmpty } from './seedData';
 
 // Configure DNS with fallback so SRV resolution succeeds across all environments
 try {
@@ -17,7 +16,12 @@ try {
   console.warn('[db] DNS notice (using default system resolver):', (e as any)?.message || e);
 }
 
-const MONGODB_URI = process.env.MONGODB_URI?.trim().replace(/["']+$/, '');
+// Ensure connection points to user's database where their real data lives
+let rawUri = process.env.MONGODB_URI?.trim().replace(/["']+$/, '') || '';
+if (rawUri && rawUri.includes('cluster1.qdqiok4.mongodb.net/lms')) {
+  rawUri = rawUri.replace('cluster1.qdqiok4.mongodb.net/lms', 'cluster1.qdqiok4.mongodb.net/test');
+}
+const MONGODB_URI = rawUri;
 
 let isConnecting = false;
 
@@ -40,14 +44,7 @@ const connectDB = async (): Promise<void> => {
       maxPoolSize: 10,
     });
     isConnecting = false;
-    console.log(`[db] MongoDB Connected: ${conn.connection.host}`);
-
-    // Seed database if empty
-    try {
-      await seedInitialCoursesIfEmpty();
-    } catch (seedErr: any) {
-      console.warn('[db] Initial course seeding notice:', seedErr?.message || seedErr);
-    }
+    console.log(`[db] MongoDB Connected: ${conn.connection.host} (Database: ${conn.connection.name})`);
   } catch (error: any) {
     isConnecting = false;
     console.error(`[db] MongoDB Connection Error: ${error?.message || error}`);
