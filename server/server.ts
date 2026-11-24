@@ -13,9 +13,9 @@ process.on("unhandledRejection", (err: any) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Create a server and listen on the specified port
-const server = app.listen(PORT, () => {
-  console.log(`[server] Server is running on port ${PORT}`);
+// Create a server and listen explicitly on IPv4 0.0.0.0 to prevent IPv6 binding issues
+const server = app.listen(Number(PORT), "0.0.0.0", () => {
+  console.log(`[server] Server is running on http://0.0.0.0:${PORT}`);
   connectDB().catch((err) => console.error("[server] Initial DB connect error:", err?.message || err));
 });
 

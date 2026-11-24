@@ -1,11 +1,8 @@
 const { spawn } = require("child_process");
 const path = require("path");
+const http = require("http");
 
-// Render assigns public port to process.env.PORT (e.g. 10000)
-// If not set (local dev), default to 3000
 const PUBLIC_PORT = process.env.PORT || "3000";
-
-// Internal port for Express API backend
 const SERVER_PORT = process.env.SERVER_PORT || process.env.EXPRESS_PORT || "5000";
 
 console.log("==================================================");
@@ -18,16 +15,54 @@ let serverProcess = null;
 let clientProcess = null;
 let isShuttingDown = false;
 
+function checkBackendReady(port, maxRetries = 30, interval = 500) {
+  return new Promise((resolve) => {
+    let retries = 0;
+    const check = () => {
+      retries++;
+      const req = http.get(`http://127.0.0.1:${port}/test`, (res) => {
+        if (res.statusCode === 200) {
+          console.log(`[system] Backend API verified healthy on port ${port}!`);
+          resolve(true);
+        } else {
+          retry();
+        }
+      });
+
+      req.on("error", () => {
+        retry();
+      });
+
+      req.setTimeout(1000, () => {
+        req.destroy();
+        retry();
+      });
+
+      function retry() {
+        if (retries >= maxRetries) {
+          console.warn(`[system] Backend health check timed out after ${maxRetries * interval}ms. Starting frontend anyway.`);
+          resolve(false);
+        } else {
+          setTimeout(check, interval);
+        }
+      }
+    };
+
+    check();
+  });
+}
+
 function startBackend() {
   const serverEnv = {
     ...process.env,
     PORT: String(SERVER_PORT),
   };
 
-  serverProcess = spawn("npm", ["start"], {
+  const serverScript = path.join(__dirname, "server", "dist", "server.js");
+
+  serverProcess = spawn(process.execPath, [serverScript], {
     cwd: path.join(__dirname, "server"),
     env: serverEnv,
-    shell: true,
     stdio: ["inherit", "pipe", "pipe"],
   });
 
@@ -56,10 +91,11 @@ function startFrontend() {
     NEXT_PUBLIC_SERVER_URI: process.env.NEXT_PUBLIC_SERVER_URI || "/api/v1",
   };
 
-  clientProcess = spawn("npm", ["start"], {
+  const nextBin = path.join(__dirname, "client", "node_modules", "next", "dist", "bin", "next");
+
+  clientProcess = spawn(process.execPath, [nextBin, "start"], {
     cwd: path.join(__dirname, "client"),
     env: clientEnv,
-    shell: true,
     stdio: ["inherit", "pipe", "pipe"],
   });
 
@@ -80,9 +116,18 @@ function startFrontend() {
   });
 }
 
-// Start both services
-startBackend();
-startFrontend();
+async function start() {
+  // 1. Start backend process directly with node
+  startBackend();
+
+  // 2. Wait until backend is verified listening and healthy on port 5000
+  await checkBackendReady(SERVER_PORT);
+
+  // 3. Start Next.js frontend on public port
+  startFrontend();
+}
+
+start();
 
 function shutdown(code = 0) {
   if (isShuttingDown) return;
