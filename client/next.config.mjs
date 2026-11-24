@@ -10,8 +10,21 @@ const nextConfig = {
       "avatars.githubusercontent.com",
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
+        ],
+      },
+    ];
+  },
   async rewrites() {
-    const backendPort = process.env.SERVER_PORT || process.env.EXPRESS_PORT || 5000;
+    const backendPort = process.env.SERVER_PORT || process.env.EXPRESS_PORT || 5005;
     return [
       {
         source: "/api/v1/:path*",

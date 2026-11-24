@@ -44,6 +44,14 @@ app.use(
   })
 );
 
+// Request logger for API calls
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.path.startsWith("/api/v1") || req.path === "/test") {
+    console.log(`[server] ${req.method} ${req.originalUrl}`);
+  }
+  next();
+});
+
 // Testing route to verify that the server is running
 app.get("/test", (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: "Server is running!" });

@@ -8,15 +8,15 @@ const PUBLIC_PORT = Number(process.env.PORT || 3000);
 
 // 2. SERVER_PORT: Internal port for the Express backend.
 // It MUST NEVER conflict with PUBLIC_PORT.
-// If PUBLIC_PORT is 5000, Express uses 5001. Otherwise, Express uses 5000.
+// Default to 5005. If PUBLIC_PORT happens to be 5005, Express uses 5006.
 let SERVER_PORT = Number(
   process.env.SERVER_PORT ||
   process.env.EXPRESS_PORT ||
-  (PUBLIC_PORT === 5000 ? 5001 : 5000)
+  5005
 );
 
 if (SERVER_PORT === PUBLIC_PORT) {
-  SERVER_PORT = PUBLIC_PORT === 5000 ? 5001 : 5000;
+  SERVER_PORT = 5006;
 }
 
 console.log("==================================================");

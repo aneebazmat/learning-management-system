@@ -8,6 +8,7 @@ type MiddlewareError = ErrorHandler & {
 };
 
 const errorHandler = (err: MiddlewareError, req: Request, res: Response, next: NextFunction) => {
+    console.error(`[server error] ${req.method} ${req.originalUrl}:`, err?.message || err);
     const statusCode = err.statusCode || (res.statusCode && res.statusCode !== 200 ? res.statusCode : 500);
     const message = err.message || "Internal Server Error";
      

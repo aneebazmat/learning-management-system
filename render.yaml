@@ -11,6 +11,8 @@ services:
         value: production
       - key: NEXT_PUBLIC_SERVER_URI
         value: /api/v1
+      - key: SERVER_PORT
+        value: "5005"
       - key: ORIGIN
         value: "['http://localhost:3000']"
       - key: MONGODB_URI

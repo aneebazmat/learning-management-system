@@ -11,7 +11,7 @@ process.on("unhandledRejection", (err: any) => {
   console.error("[server] Unhandled Rejection:", err?.message || err);
 });
 
-const PORT = process.env.SERVER_PORT || process.env.EXPRESS_PORT || process.env.PORT || 5000;
+const PORT = process.env.SERVER_PORT || process.env.EXPRESS_PORT || process.env.PORT || 5005;
 
 // Create a server and listen explicitly on IPv4 0.0.0.0 to prevent IPv6 binding issues
 const server = app.listen(Number(PORT), "0.0.0.0", () => {
